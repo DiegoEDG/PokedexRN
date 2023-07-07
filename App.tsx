@@ -1,9 +1,15 @@
-import React from 'react';
-import {StyleSheet, SafeAreaView} from 'react-native';
 import 'react-native-gesture-handler';
+import React from 'react';
+import {StyleSheet} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {StackNavigator} from './src/navigator';
 
 const App = () => {
-  return <SafeAreaView style={styles.main}></SafeAreaView>;
+  return (
+    <NavigationContainer>
+      <StackNavigator />
+    </NavigationContainer>
+  );
 };
 
 export default App;
