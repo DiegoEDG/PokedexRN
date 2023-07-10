@@ -35,7 +35,5 @@ export const useGetListedPokemons = () => {
     fetchListedPokemons();
   }, []);
 
-  console.log(basicPokemonsList);
-
-  return {basicPokemonsList};
+  return {basicPokemonsList, fetchListedPokemons};
 };

@@ -1,11 +1,19 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {PokemonCard} from '../components';
 import {useGetListedPokemons} from '../hooks';
 
 const HomeScreen = () => {
   const {top} = useSafeAreaInsets();
-  useGetListedPokemons();
+  const {basicPokemonsList, fetchListedPokemons} = useGetListedPokemons();
 
   return (
     <>
@@ -15,6 +23,31 @@ const HomeScreen = () => {
       />
       <View style={{top}}>
         <Text style={styles.title}>Pokedex</Text>
+        {basicPokemonsList.length === 0 ? (
+          <ActivityIndicator />
+        ) : (
+          <View style={{alignItems: 'center'}}>
+            <FlatList
+              data={basicPokemonsList}
+              keyExtractor={pokemon => pokemon.id}
+              numColumns={2}
+              showsVerticalScrollIndicator={false}
+              // Items
+              renderItem={({item}) => <PokemonCard pokemon={item} />}
+              // InfiniteScroll
+              onEndReachedThreshold={0.4}
+              onEndReached={fetchListedPokemons}
+              // Loader
+              ListFooterComponent={
+                <ActivityIndicator
+                  size={3}
+                  color="white"
+                  style={{marginVertical: 15}}
+                />
+              }
+            />
+          </View>
+        )}
       </View>
     </>
   );
@@ -35,5 +68,6 @@ export const styles = StyleSheet.create({
     color: 'white',
     fontSize: 40,
     marginLeft: 15,
+    marginBottom: 5,
   },
 });
