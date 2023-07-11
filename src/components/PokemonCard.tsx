@@ -1,9 +1,12 @@
 import React from 'react';
-import {Dimensions, Image, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Image, Pressable, StyleSheet, Text} from 'react-native';
 import {BasicPokemon} from '../interfaces';
 import {FadeInImage} from './FadeInImage';
 import {useState, useEffect} from 'react';
 import ImageColors from 'react-native-image-colors';
+import {useNavigation} from '@react-navigation/native';
+import {RootStackParams} from '../navigator/StackNavigator';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 interface Props {
   pokemon: BasicPokemon;
@@ -13,6 +16,7 @@ const screenWidt = Dimensions.get('screen').width;
 
 const PokemonCard = ({pokemon}: Props) => {
   const [cardBg, setCardBg] = useState('');
+  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
 
   useEffect(() => {
     ImageColors.getColors(pokemon.picture, {fallback: '#2E2F2D'}).then(
@@ -25,7 +29,14 @@ const PokemonCard = ({pokemon}: Props) => {
   }, []);
 
   return (
-    <View style={{...styles.card, backgroundColor: cardBg}}>
+    <Pressable
+      onPress={() =>
+        navigation.navigate('PokemonScreen', {
+          basicPokemon: pokemon,
+          color: cardBg,
+        })
+      }
+      style={{...styles.card, backgroundColor: cardBg}}>
       <Text style={styles.name}>{`${pokemon.name
         .slice(0, 1)
         .toUpperCase()}${pokemon.name.slice(1)}\n# ${pokemon.id}`}</Text>
@@ -35,7 +46,7 @@ const PokemonCard = ({pokemon}: Props) => {
         style={styles.pokeballImg}
       />
       <FadeInImage uri={pokemon.picture} style={styles.pokemonImg} />
-    </View>
+    </Pressable>
   );
 };
 
