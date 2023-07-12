@@ -8,11 +8,11 @@ import {
   Text,
   View,
 } from 'react-native';
+import {StackScreenProps} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {FadeInImage} from '../components';
 import {RootStackParams} from '../navigator/StackNavigator';
 import {useGetFullPokemon} from '../hooks';
-import {StackScreenProps} from '@react-navigation/stack';
 
 interface Props extends StackScreenProps<RootStackParams, 'PokemonScreen'> {}
 
