@@ -56,7 +56,7 @@ export const styles = StyleSheet.create({
   card: {
     width: screenWidt * 0.4,
     height: 160,
-    marginHorizontal: 10,
+    marginHorizontal: 12,
     marginBottom: 20,
     borderRadius: 8,
     overflow: 'hidden',

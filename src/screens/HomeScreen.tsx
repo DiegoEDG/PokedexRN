@@ -3,16 +3,22 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {PokemonCard} from '../components';
 import {useGetListedPokemons} from '../hooks';
+import {RootStackParams} from '../navigator/StackNavigator';
 
 const HomeScreen = () => {
   const {top} = useSafeAreaInsets();
+  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
   const {basicPokemonsList, fetchListedPokemons} = useGetListedPokemons();
 
   return (
@@ -22,7 +28,12 @@ const HomeScreen = () => {
         style={styles.image}
       />
       <View style={{top}}>
-        <Text style={styles.title}>Pokedex</Text>
+        <View style={styles.headerContainer}>
+          <Text style={styles.title}>Pokedex</Text>
+          <Pressable onPress={() => navigation.navigate('SearchScreen')}>
+            <Icon name="search-outline" size={40} color="white" />
+          </Pressable>
+        </View>
         {basicPokemonsList.length === 0 ? (
           <ActivityIndicator />
         ) : (
@@ -67,7 +78,12 @@ export const styles = StyleSheet.create({
   title: {
     color: 'white',
     fontSize: 40,
-    marginLeft: 15,
     marginBottom: 5,
+  },
+  headerContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 35,
   },
 });

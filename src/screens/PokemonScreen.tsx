@@ -1,4 +1,3 @@
-import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {
   ActivityIndicator,
@@ -13,6 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {FadeInImage} from '../components';
 import {RootStackParams} from '../navigator/StackNavigator';
 import {useGetFullPokemon} from '../hooks';
+import {StackScreenProps} from '@react-navigation/stack';
 
 interface Props extends StackScreenProps<RootStackParams, 'PokemonScreen'> {}
 
@@ -78,13 +78,17 @@ const PokemonScreen = ({route, navigation}: Props) => {
               <View>
                 <Text style={styles.subtitle}>Types</Text>
                 {fullPokemon.types.map(item => (
-                  <Text style={{...styles.text}}>・{item.type.name}</Text>
+                  <Text key={item.type.name} style={{...styles.text}}>
+                    ・{item.type.name}
+                  </Text>
                 ))}
               </View>
               <View>
                 <Text style={styles.subtitle}>Base Habilities</Text>
                 {fullPokemon.abilities.map(item => (
-                  <Text style={{...styles.text}}>・{item.ability.name}</Text>
+                  <Text key={item.ability.name} style={{...styles.text}}>
+                    ・{item.ability.name}
+                  </Text>
                 ))}
               </View>
             </View>
@@ -96,9 +100,14 @@ const PokemonScreen = ({route, navigation}: Props) => {
                   <Text style={styles.statValue}>{fullPokemon.height}</Text>
                 </Text>
                 {fullPokemon.stats.slice(0, 3).map(item => (
-                  <Text style={styles.text}>
+                  <Text key={item.stat.name} style={styles.text}>
                     ・{item.stat.name}:{' '}
-                    <Text style={styles.statValue}> {item.base_stat} </Text>
+                    <Text
+                      key={item.base_stat + item.stat.name}
+                      style={styles.statValue}>
+                      {' '}
+                      {item.base_stat}{' '}
+                    </Text>
                   </Text>
                 ))}
               </View>
@@ -108,9 +117,14 @@ const PokemonScreen = ({route, navigation}: Props) => {
                   <Text style={styles.statValue}>{fullPokemon.weight}</Text>
                 </Text>
                 {fullPokemon.stats.slice(3, 6).map(item => (
-                  <Text style={styles.text}>
+                  <Text key={item.stat.name} style={styles.text}>
                     ・{item.stat.name}:{' '}
-                    <Text style={styles.statValue}> {item.base_stat} </Text>
+                    <Text
+                      key={item.base_stat + item.stat.name}
+                      style={styles.statValue}>
+                      {' '}
+                      {item.base_stat}{' '}
+                    </Text>
                   </Text>
                 ))}
               </View>
@@ -124,7 +138,9 @@ const PokemonScreen = ({route, navigation}: Props) => {
                 paddingBottom: 50,
               }}>
               {fullPokemon.moves.map(item => (
-                <Text style={styles.text}>・{item.move.name}</Text>
+                <Text key={item.move.name} style={styles.text}>
+                  ・{item.move.name}
+                </Text>
               ))}
             </View>
           </>
