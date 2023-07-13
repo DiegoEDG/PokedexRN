@@ -1,26 +1,41 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   FlatList,
   Image,
-  Pressable,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {RootStackParams} from '../navigator/StackNavigator';
-import {useGetListedPokemons} from '../hooks';
-import {PokemonCard} from '../components';
+import {useFullListedPokemons, useGetListedPokemons} from '../hooks';
+import {InputSearch, PokemonCard} from '../components';
+import {BasicPokemon} from '../interfaces';
 
 const SearchScreen = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
   const {top} = useSafeAreaInsets();
-  const {basicPokemonsList, fetchListedPokemons} = useGetListedPokemons();
+  const {basicPokemonsList} = useFullListedPokemons();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResult, setSearchResult] = useState<BasicPokemon[]>([]);
+
+  useEffect(() => {
+    if (searchTerm.length === 0) {
+      return setSearchResult([]);
+    }
+    if (isNaN(Number(searchTerm))) {
+      setSearchResult(
+        basicPokemonsList.filter(pokemon =>
+          pokemon.name
+            .toLocaleLowerCase()
+            .includes(searchTerm.toLocaleLowerCase()),
+        ),
+      );
+    } else {
+      setSearchResult(
+        basicPokemonsList.filter(pokemon => pokemon.id === searchTerm),
+      );
+    }
+  }, [searchTerm]);
 
   return (
     <View style={{...styles.container, top}}>
@@ -28,41 +43,20 @@ const SearchScreen = () => {
         source={require('../assets/pokebola-blanca.png')}
         style={styles.image}
       />
-      <View style={styles.headerContainer}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back-outline" size={40} color="white" />
-        </Pressable>
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="Search Pokemon"
-            placeholderTextColor="gray"
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={{color: 'white', fontSize: 20}}
-          />
-          <Icon name="search-outline" size={30} color="white" />
-        </View>
-      </View>
-      <Text style={styles.searchTerm}>"Cubone"</Text>
+
+      <InputSearch onDebounce={value => setSearchTerm(value)} />
+      <Text style={styles.searchTerm}>
+        {searchTerm.length === 0 ? ' ' : `"${searchTerm}"`}
+      </Text>
+
       <View style={styles.resultsContainer}>
         <FlatList
-          data={basicPokemonsList}
+          data={searchResult}
           keyExtractor={pokemon => pokemon.id}
           numColumns={2}
           showsVerticalScrollIndicator={false}
           // Items
           renderItem={({item}) => <PokemonCard pokemon={item} />}
-          // InfiniteScroll
-          onEndReachedThreshold={0.4}
-          onEndReached={fetchListedPokemons}
-          // Loader
-          ListFooterComponent={
-            <ActivityIndicator
-              size={3}
-              color="white"
-              style={{marginVertical: 15}}
-            />
-          }
         />
       </View>
     </View>
@@ -83,25 +77,6 @@ export const styles = StyleSheet.create({
     width: 400,
     height: 400,
     opacity: 0.2,
-  },
-  headerContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    paddingHorizontal: 5,
-    justifyContent: 'space-between',
-  },
-  inputContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    paddingHorizontal: 5,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '88%',
-    borderRadius: 15,
-
-    borderColor: 'white',
-    borderWidth: 1,
-    borderStyle: 'solid',
   },
   searchTerm: {
     color: 'white',
